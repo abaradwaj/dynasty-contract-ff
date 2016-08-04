@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Welcome to Firebase Hosting!!!!!!!!</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
+    <link rel="stylesheet" href="file.css">
     <style media="screen">
       body {
         font-family: Roboto, Arial, sans-serif;
@@ -65,5 +68,48 @@
         <li><a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a></li>
       </ul>
     </div>
+
+    <form>
+  <div class="row">
+    <div class="large-12 columns">
+      <div id='messagesDiv' class="msg-wrapper"></div>
+      <hr />
+     </div>
+  </div>
+  
+  <div class="row">
+    <div class="large-12 columns">
+      <label>Name
+        <input type="text" id='nameInput' placeholder='Name' />
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-12 columns">
+      <label>Message
+        <textarea id='messageInput' placeholder='Message'></textarea>
+      </label>
+    </div>
+  </div>
+</form>
+
+<script> var myDataRef = new Firebase('https://thanhchat.firebaseio.com');
+      $('#messageInput').keypress(function (e) {
+        if (e.keyCode == 13) {
+          var name = $('#nameInput').val();
+          var text = $('#messageInput').val();
+          myDataRef.push({name: name, text: text});
+          $('#messageInput').val('');
+        }
+      });
+      myDataRef.on('child_added', function(snapshot) {
+        var message = snapshot.val();
+        displayChatMessage(message.name, message.text);
+      });
+      function displayChatMessage(name, text) {
+        $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+      };
+      </script>
   </body>
 </html>
